@@ -20,6 +20,7 @@ import sessions from '@/views/sessions'
 import session from '@/views/session'
 import notReady from '@/views/notReady'
 import tasks from '@/views/tasks' 
+import applications from '@/views/applications'
 
 Vue.use(VueRouter)
 
@@ -29,6 +30,12 @@ const routes = [
     name: 'Home',
     meta: { layout: 'main' },
     component: Home
+  },
+  {
+    path: '/applications',
+    name: 'applications',
+    meta: { layout: 'main' },
+    component: applications
   },
   {
     path: '/audit',

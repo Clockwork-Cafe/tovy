@@ -135,21 +135,6 @@
             <v-list-item-title>Logs</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-
-        <v-list-item
-          link
-          v-if="this.$store.state.user.perms.includes('admin')"
-          class="mt-2"
-          :href="`https://github.com/ItsWHOOOP/tovy`"
-        >
-          <v-list-item-icon class="">
-            <v-icon>mdi-github</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Github</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   </div>
@@ -197,6 +182,12 @@ export default {
         icon: "mdi-account-multiple",
         path: "/staff",
         permission: "manage_staff_activity",
+      },
+      {
+        name: "Applications",
+        icon: "mdi-account-plus",
+        path: "/applications",
+        permission: "admin",
       },
     ],
   }),
