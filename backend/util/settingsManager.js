@@ -58,11 +58,10 @@ module.exports = class SettingsManager {
         if (!isRegestered?.enabled) return;
 
         try {
-            await axios.post('http://localhost:2927/deregisterinstance', {
+            await axios.post('https://bot.tovyblox.xyz/deregisterinstance', {
                 key: isRegestered.key
             });
         } catch(e) {
-            console.log(e.response.data)
             throw new Error('Failed to deregester instance');
         }
         isRegestered.enabled = false;

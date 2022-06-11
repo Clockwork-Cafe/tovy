@@ -23,7 +23,7 @@
                 {{ update.title }}
               </v-card-title>
               <v-card-text class="mt-n6 black--text">
-                Update to Tovy {{ update.version }} for the newest features
+                Update to {{ update.version }} for the newest features
               </v-card-text>
             </div>
             <v-spacer />

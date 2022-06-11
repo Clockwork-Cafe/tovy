@@ -56,18 +56,13 @@ const erouter = (usernames, pfps, settings, permissions, automation) => {
             .setColor('GREEN')
             .setTimestamp()
             .setAuthor(username, pfp, `https://www.roblox.com/users/${data.uid}`)
-            .setDescription(`A ${data.type.name} is now being hosted by ${username}! Join the game below to attend this session.`)
-            .addField('Gamelink', `https://www.roblox.com/games/${data.type.gid}/-`, true)
+            .setDescription(`A ${data.type.name} is now being hosted by ${username}! Join the game below to attend this ${data.type.name}.`)
+            .addField('Game', `https://www.roblox.com/games/${data.type.gid}/-`, true)
             .setImage(data.thumbnail)
-            .setFooter({ text: `Tovy Sessions` });
-
-        let components = new discord.MessageActionRow()
-            .addComponents(
-                new discord.MessageButton({ style: 'LINK', label: 'Join', url: `https://www.roblox.com/games/${data.type.gid}/-` })
-            );
+            .setFooter({ text: `Clockwork Cafe` });
         
 
-        let msg = await webhookc.send({ content: settings.get('sessions').discoping.length ? settings.get('sessions').discoping : null, embeds: [embed], components: [components] }).catch(err => {
+        let msg = await webhookc.send({ content: settings.get('sessions').discoping.length ? settings.get('sessions').discoping : null, embeds: [embed] }).catch(err => {
         });
         
         return msg?.id;
@@ -88,8 +83,8 @@ const erouter = (usernames, pfps, settings, permissions, automation) => {
             .setColor('RED')
             .setTimestamp()
             .setAuthor(username, pfp, `https://www.roblox.com/users/${data.uid}`)
-            .setDescription(`The ${data.type.name} hosted by ${username} has ended! We will host more very soon don't worry`)
-            .setFooter({ text: `Tovy sessions` });
+            .setDescription(`The **${data.type.name}** hosted by ${username} has ended! Thank you for attending!`)
+            .setFooter({ text: `Clockwork Cafe` });
 
 
         let msg = await webhookc.editMessage(data.did, { content: null, embeds: [embed], components: [] }).catch(err => {
@@ -205,6 +200,12 @@ const erouter = (usernames, pfps, settings, permissions, automation) => {
                 pfp: await fetchpfp(req.session.userid),
             },
         })
+
+        try {
+            await noblox.shout(settings.get('group'), `${await fetchusername(req.session.userid)} has started a ${dbdata.type.name} session! Join the game below to attend!\nhttps://www.roblox.com/games/${dbdata.type.gid}`);
+        } catch (e) {
+            console.log('Error sending shout');
+        }
     })
 
 

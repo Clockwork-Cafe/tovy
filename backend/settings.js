@@ -182,7 +182,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
     });
 
     router.post('/setwall', perms('admin'), async (req, res) => {
-        settings.set('wall', req.body.wall);
+        settings.set('wall', req.body.settings);
         logging.newLog(`has updated the wall`, req.session.userid);
         const body = req.body;
 
@@ -285,6 +285,26 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
 
         res.status(200).json({ message: 'Successfully updated invites!', invites: invites });
     });
+
+    router.post('/enableapplication', perms('admin'), async (req, res) => {
+        let uid = req.session.userid;
+        const application = db.application.findOne({ name: req.body.name });
+        if (!application) return res.status(400).json({ message: 'No application found!' });
+        application.enabled = true;
+        await application.save();
+        logging.newLog(`has enabled the application ${req.body.name}`, req.session.userid);
+        res.status(200).json({ message: 'Successfully updated application!' });
+    })
+
+    router.post('/disableapplication', perms('admin'), async (req, res) => {
+        let uid = req.session.userid;
+        const application = db.application.findOne({ name: req.body.name });
+        if (!application) return res.status(400).json({ message: 'No application found!' });
+        application.enabled = false;
+        await application.save();
+        logging.newLog(`has disabled the application ${req.body.name}`, req.session.userid);
+        res.status(200).json({ message: 'Successfully updated application!' });
+    })
 
     router.post('/newinvite', perms('admin'), async (req, res) => {
         let uid = req.session.userid;

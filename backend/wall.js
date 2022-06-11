@@ -18,7 +18,6 @@ let activews = [];
 
 
 const erouter = (usernames, pfps, settings, permissions, automation) => {
-    console.log('running')
     let perms = permissions.perms;
     let checkPerm = permissions.checkPerm
 
@@ -62,7 +61,7 @@ const erouter = (usernames, pfps, settings, permissions, automation) => {
         let webhookc = new WebhookClient({ url: webhook });
 
         let embed = new MessageEmbed()
-            .setTitle('New Tovy Wall Post')
+            .setTitle('New Wall Post')
             .setColor('GREEN')
             .setTimestamp()
             .setAuthor(username, pfp, `https://www.roblox.com/users/${data.author}`)
@@ -73,7 +72,6 @@ const erouter = (usernames, pfps, settings, permissions, automation) => {
     }
 
     router.ws('/socket', async (ws, req) => {
-        console.log(req.session.userid)
         let cp = await checkPerm(req.session.userid);
         console.log(cp)
         
@@ -127,12 +125,26 @@ const erouter = (usernames, pfps, settings, permissions, automation) => {
                 data: { id, actor: req.session.userid }
             }));
         });
+
+
         res.send({ success: true });
+        if (!settings.get('wall')?.discordhook) return;
+        let webhook = settings.get('wall').discordhook;
+        let webhookc = new WebhookClient({ url: webhook });
+
+        const userPfp = await fetchpfp(message.author);
+        let embed = new MessageEmbed()
+            .setTitle('Wall Post Deleted')
+            .setColor('RED')
+            .setTimestamp()
+            .setAuthor(await noblox.getUsernameFromId(Number(req.session.userid)), userPfp,`https://www.roblox.com/users/${req.session.userid}`)
+            .setDescription(message.message)
+
+        webhookc.send({ embeds: [embed] })
     })
 
     router.post('/send',perms('post_on_wall'), async (req, res) => {
         const { message, shout } = req.body;
-        console.log(await db.message.countDocuments({}))
         let id = parseInt(await db.message.countDocuments({}));
 
         let data = {

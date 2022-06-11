@@ -20,4 +20,5 @@ module.exports = {
     gsession: require('./schemas/gsession.schema'),
     ban: require('./schemas/ban.schema'),
     task: require('./schemas/task.schema'),
+    application: require('./schemas/application.schema'),
 }

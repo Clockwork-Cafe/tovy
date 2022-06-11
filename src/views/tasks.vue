@@ -5,7 +5,7 @@
         <p class="text-h4 font-weight-bold mt-14">
           Hi {{ this.$store.state.user.displayName }},
         </p>
-        <p class="text-body-1 font-weight-bold mt-n5 gray">Welcome to Tovy tasks</p>
+        <p class="text-body-1 font-weight-bold mt-n5 gray">Welcome to tasks</p>
       </v-container>
     </v-sheet>
 

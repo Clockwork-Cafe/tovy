@@ -16,7 +16,7 @@ let backendonly = false;
 
 if (argv['backend-only'] || argv.b) backendonly = true;
 if (backendonly) {
-    console.log('Running tovy on the backend')
+    console.log('Running on the backend')
 }
 
 const _ = require('lodash');
