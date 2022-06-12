@@ -12,6 +12,35 @@
       <v-icon>mdi-pencil-plus</v-icon>
       Create Guide
     </v-btn>
+    <v-container class="mt-n5">
+      <v-card class="mt-7" v-for="guide in guides" :key="guide.name">
+        <v-card-title>
+          <v-card-title-text>
+            <div class="headline">{{ guide.name }}</div>
+          </v-card-title-text>
+        </v-card-title>
+        <v-card-text>
+          <p class="text-body-1">{{ guide.description }}</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn
+            color="primary"
+            @click="enableGuide(guide.name)"
+            v-bind:disabled="guide.enabled"
+          >
+            Enable</v-btn
+          >
+          <v-btn
+            color="error"
+            @click="disableGuide(guide.name)"
+            v-bind:disabled="!guide.enabled"
+          >
+
+            Disable</v-btn
+          >
+        </v-card-actions>
+        </v-card>
+        </v-container>
     <v-dialog v-model="dialog.active" max-width="600px">
       <v-progress-linear
         :color="$store.state.group.color"
@@ -136,6 +165,7 @@ export default {
   mounted: function () {
     this.$http.get("/pdf/all").then((response) => {
       this.guides = response.data.pdfs;
+      console.log(response.data)
     });
     this.$http.get("/settings/roles").then((response) => {
       this.dialog.roles = response.data.roles;
