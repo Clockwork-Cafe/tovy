@@ -20,7 +20,26 @@
         </v-card-title>
         <v-card-text>
           <p class="text-body-1">{{ app.description }}</p>
+  <v-row>
+                           <v-autocomplete
+              class="mx-10 mt-5 mb-n2"
+              v-model="newRanks"
+              :items="ranks"
+              item-text="name"
+              item-value="id"
+              outlined
+              chips
+              small-chips
+              label="Allowed Ranks"
+              multiple
+            ></v-autocomplete>
+            <v-btn>
+              <v-icon>mdi-save</v-icon>
+              Save
+            </v-btn>
+            </v-row>
         </v-card-text>
+       
         <v-card-actions>
           <v-btn
             color="primary"
@@ -42,9 +61,13 @@
               question.name = app.name;
             "
           >
+          <br>
+          <v-divider></v-divider>
+          <br>
             <v-icon>mdi-pencil-outline</v-icon>
             Add Question
           </v-btn>
+
         </v-card-actions>
         <v-expansion-panel>
           
@@ -188,6 +211,7 @@ export default {
         color: "success",
         visible: false,
       },
+      ranks: [],
       dialog: {
         active: false,
         page: 1,
@@ -202,6 +226,7 @@ export default {
         answer: "",
         name: "",
       },
+      newRanks: [],
     };
   },
   mounted: function () {
@@ -213,6 +238,11 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+    this.$http.get('/pdf/ranks').then((response) => {
+      this.ranks = response.data.roles;
+    }).catch((error) => {
+      console.log(error);
+    });
   },
   methods: {
     getApplications: function () {

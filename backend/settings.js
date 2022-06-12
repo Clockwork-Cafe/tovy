@@ -70,6 +70,16 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         return res.status(200).json({ updates: true, ...red.data });
     });
 
+    router.post('/setranks', perms('admin'), async (req, res) => {
+        let uid = req.session.userid;
+        const application = await db.application.findOne({ name: req.body.name });
+        if (!application) return res.status(400).json({ message: 'No such application!' });
+            application.ranks = req.body.ranks
+        await application.save();
+        res.status(200).json({ message: 'Successfully added ranks!' });
+    })
+
+
     router.post('/automation/new', perms('admin'), async (req, res) => {
         let id = await db.automation.countDocuments({ }); 
         let a = new db.automation({ 

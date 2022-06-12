@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const noblox = require("noblox.js");
 const db = require("./db/db");
 const erouter = (usernames, pfps, settings, permissions, logging) => {
     const perms = permissions.perms;
@@ -20,6 +21,10 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
             description: description
         });
         res.status(200).json({ success: true });
+    })
+    router.get('/ranks', async (req, res) => {
+        const roles = await noblox.getRoles(Number(settings.get('group')));
+        res.status(200).json({ roles: roles });
     })
     router.post('/delete', perms("admin"), async (req, res) => {
         const { name } = req.body;

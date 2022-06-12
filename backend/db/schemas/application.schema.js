@@ -17,7 +17,7 @@ const applucation = new mongoose.Schema({
     enabled: Boolean,
     textQuestions: [tquestion],
     choiceQuestions: [mquestion],
-    minrank: Number,
+    ranks: [String],
 })
 
 module.exports = mongoose.models['applications'] || mongoose.model('applications', applucation, 'applications');
