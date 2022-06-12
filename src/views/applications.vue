@@ -37,16 +37,52 @@
             Disable</v-btn
           >
           <v-btn
-          @click="dialog.active = true; question.name = app.name"
+            @click="
+              dialog.active = true;
+              question.name = app.name;
+            "
           >
             <v-icon>mdi-pencil-outline</v-icon>
             Add Question
           </v-btn>
         </v-card-actions>
+        <v-expansion-panel>
+          
+        <v-expansion-panels>
+          <v-expansion-panel
+            v-for="question in app.choiceQuestions"
+            :key="question.question"
+          >
+            <v-expansion-panel-header>
+              <div class="subheading mb-n2">
+                {{ question.question }}
+                <v-btn @click="deleteQuestion(app.name, question.question)" text icon color="red lighten-2">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <p class="red--text text--lighten-1 text-body-1">
+                {{ question.a1 }}
+              </p>
+              <p class="red--text text--lighten-1 text-body-1">
+                {{ question.a2 }}
+              </p>
+              <p class="red--text text--lighten-1 text-body-1">
+                {{ question.a3 }}
+              </p>
+              <p class="mb-n1 green--text text--lighten-1 text-body-1">
+                {{ question.answer }}
+              </p>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-expansion-panel>
+
       </v-card>
     </v-container>
 
-        <v-dialog v-model="dialog.active" max-width="600px">
+    <v-dialog v-model="dialog.active" max-width="600px">
       <v-progress-linear
         :color="$store.state.group.color"
         indeterminate
@@ -55,15 +91,15 @@
       ></v-progress-linear>
       <v-stepper v-model="dialog.page">
         <v-stepper-header>
-          <v-stepper-step :complete="dialog.page > 1" step="1"> Question </v-stepper-step>
+          <v-stepper-step :complete="dialog.page > 1" step="1">
+            Question
+          </v-stepper-step>
 
           <v-divider></v-divider>
 
           <v-stepper-step :complete="dialog.page > 2" step="2">
             Answers
           </v-stepper-step>
-
-
         </v-stepper-header>
 
         <v-stepper-items>
@@ -71,11 +107,7 @@
             <v-text-field
               v-model="question.question"
               label="Question"
-              :rules="[
-                v => !!v || 'Question is required',
-              required
-              ]"
-              
+              :rules="[(v) => !!v || 'Question is required', required]"
             ></v-text-field>
             <v-btn color="primary" @click="dialog.page++"> Continue </v-btn>
 
@@ -83,7 +115,7 @@
           </v-stepper-content>
 
           <v-stepper-content step="2">
-                                    <v-text-field
+            <v-text-field
               label="Wrong Answer 1"
               outlined
               v-model="question.a1"
@@ -101,7 +133,7 @@
               class="mb-3"
               hide-details="auto"
             ></v-text-field>
-                        <v-text-field
+            <v-text-field
               label="Wrong Answer 3"
               outlined
               v-model="question.a3"
@@ -110,7 +142,7 @@
               class="mb-3"
               hide-details="auto"
             ></v-text-field>
-                        <v-text-field
+            <v-text-field
               label="Correct Answer"
               outlined
               v-model="question.answer"
@@ -119,7 +151,6 @@
               class="mb-3"
               hide-details="auto"
             ></v-text-field>
-
 
             <v-btn color="primary" @click="addQuestion"> Finish </v-btn>
 
@@ -161,7 +192,7 @@ export default {
         active: false,
         page: 1,
         loading: false,
-        roles: []
+        roles: [],
       },
       question: {
         question: "",
@@ -170,7 +201,7 @@ export default {
         a3: "",
         answer: "",
         name: "",
-      }
+      },
     };
   },
   mounted: function () {
@@ -227,31 +258,52 @@ export default {
         });
     },
     addQuestion: function () {
-   
-      this.$http.post('/settings/addquestion', {
-        question: this.question,
-        name: this.question.name,
-      }).then(() => {
-        this.getApplications();
-        this.toast.message = "Question added";
-        this.toast.color = "success";
-        this.toast.visible = true;
-           this.dialog.active = false;
-      this.dialog.page = 1;
-      this.dialog.loading = false;
-      this.dialog.roles = [];
-      this.question.question = "";
-      this.question.a1 = "";
-      this.question.a2 = "";
-      this.question.name
-      this.question.a3 = "";
-      this.question.answer = "";
-      }).catch((error) => {
-        console.log(error);
-        this.toast.message = "Error adding question";
-        this.toast.color = "error";
-        this.toast.visible = true;
-      });
+      this.$http
+        .post("/settings/addquestion", {
+          question: this.question,
+          name: this.question.name,
+        })
+        .then(() => {
+          this.getApplications();
+          this.toast.message = "Question added";
+          this.toast.color = "success";
+          this.toast.visible = true;
+          this.dialog.active = false;
+          this.dialog.page = 1;
+          this.dialog.loading = false;
+          this.dialog.roles = [];
+          this.question.question = "";
+          this.question.a1 = "";
+          this.question.a2 = "";
+          this.question.name;
+          this.question.a3 = "";
+          this.question.answer = "";
+        })
+        .catch((error) => {
+          console.log(error);
+          this.toast.message = "Error adding question";
+          this.toast.color = "error";
+          this.toast.visible = true;
+        });
+    },
+    deleteQuestion: function (name, question) {
+      this.$http
+        .post("/settings/removequestion", {
+          name: name,
+          question: question,
+        })
+        .then(() => {
+          this.getApplications();
+          this.toast.message = "Question deleted";
+          this.toast.color = "success";
+          this.toast.visible = true;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.toast.message = "Error deleting question";
+          this.toast.color = "error";
+          this.toast.visible = true;
+        });
     },
   },
 };

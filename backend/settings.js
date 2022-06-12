@@ -326,7 +326,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         let uid = req.session.userid;
         const application = await db.application.findOne({ name: req.body.name });
         if (!application) return res.status(400).json({ message: 'No application found!' });
-        application.choiceQuestions.splice(applications.questions.indexOf(req.body.question), 1);
+        application.choiceQuestions.splice(application.choiceQuestions.indexOf(req.body.question), 1);
         await db.application.updateMany({ name: req.body.name }, { $set: { choiceQuestions: application.choiceQuestions } });
         logging.newLog(`has removed a question from the application ${req.body.name}`, req.session.userid);
         res.status(200).json({ message: 'Successfully updated application!' });
