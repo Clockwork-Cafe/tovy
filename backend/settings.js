@@ -311,6 +311,37 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         res.status(200).json({ message: 'Successfully updated application!' });
     })
 
+    router.post('/addquestion', perms('admin'), async (req, res) => {
+        let uid = req.session.userid;
+        const application = await db.application.findOne({ name: req.body.name });
+        if (!application) return res.status(400).json({ message: 'No application found!' });
+        application.choiceQuestions.push(req.body.question);
+        let q = application.choiceQuestions
+        await db.application.updateMany({ name: req.body.name }, { $set: { choiceQuestions: application.choiceQuestions } });
+        logging.newLog(`has added a question to the application ${req.body.name}`, req.session.userid);
+        res.status(200).json({ message: 'Successfully updated application!' });
+    })
+
+    router.post('/removequestion', perms('admin'), async (req, res) => {
+        let uid = req.session.userid;
+        const application = await db.application.findOne({ name: req.body.name });
+        if (!application) return res.status(400).json({ message: 'No application found!' });
+        application.choiceQuestions.splice(applications.questions.indexOf(req.body.question), 1);
+        await db.application.updateMany({ name: req.body.name }, { $set: { choiceQuestions: application.choiceQuestions } });
+        logging.newLog(`has removed a question from the application ${req.body.name}`, req.session.userid);
+        res.status(200).json({ message: 'Successfully updated application!' });
+    })
+
+    router.post('/setminrank', perms('admin'), async (req, res) => {
+        let uid = req.session.userid;
+        const application = db.application.findOne({ name: req.body.name });
+        if (!application) return res.status(400).json({ message: 'No application found!' });
+        application.minrank = req.body.minrank;
+        await db.application.updateMany({ name: req.body.name }, { $set: { minrank: application.minrank } });
+        logging.newLog(`has set the minimum rank for the application ${req.body.name}`, req.session.userid);
+        res.status(200).json({ message: 'Successfully updated application!' });
+    })
+
     router.post('/newinvite', perms('admin'), async (req, res) => {
         let uid = req.session.userid;
 

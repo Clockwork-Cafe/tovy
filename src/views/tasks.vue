@@ -278,7 +278,6 @@ export default {
     showCompleted: false,
     loading: false,
     newTask: {
-      due: "",
       name: "",
       description: "",
       assignedRoles: [],
