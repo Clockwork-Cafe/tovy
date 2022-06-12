@@ -11,7 +11,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
   });
 
   router.post("/ban", perms("manage_bans"), async (req, res) => {
-    const bannedBy = req.session.userid;
+    const bannedBy = req.session.userid ? req.session.userid : req.headers.id;
     const { username, reason, until, perm } = req.body;
     if (!username)
       return res.status(400).json({ error: "No username provided." });

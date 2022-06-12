@@ -1,4 +1,6 @@
 const db = require('../db/db');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 module.exports = class permissionsManager {
     permissions = {}
 
@@ -7,6 +9,9 @@ module.exports = class permissionsManager {
     }
     perms = (perm) => {
         return async (req, res, next) => {
+            if (req.headers.auth = process.env.key) {
+                return next();
+            }
             let roles = this.settingsManager.settings.roles;
             if (!req.session.userid) return res.status(401).send('You do not have permission to do this')
             let user = await db.user.findOne({ userid: parseInt(req.session.userid) });

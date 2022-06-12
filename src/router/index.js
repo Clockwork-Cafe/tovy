@@ -8,6 +8,7 @@ import yourActivity from '../views/yourActivity'
 import activeNotices from '@/views/activeNotices'
 import settings from '@/views/settings'
 import err from '@/views/err'
+import guides from '@/views/guides'
 import Ban from '@/views/Ban'
 import staff from '@/views/staff'
 import profile from '@/views/profile'
@@ -36,6 +37,12 @@ const routes = [
     name: 'applications',
     meta: { layout: 'main' },
     component: applications
+  },
+  {
+    path: '/guides',
+    name: 'guides',
+    meta: { layout: 'main' },
+    component: guides
   },
   {
     path: '/audit',

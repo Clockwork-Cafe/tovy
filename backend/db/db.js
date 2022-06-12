@@ -21,4 +21,5 @@ module.exports = {
     ban: require('./schemas/ban.schema'),
     task: require('./schemas/task.schema'),
     application: require('./schemas/application.schema'),
+    pdf: require('./schemas/pdf.schema'),
 }

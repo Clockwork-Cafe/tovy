@@ -189,6 +189,11 @@ export default {
         path: "/applications",
         permission: "admin",
       },
+      {
+        name: "Guides",
+        icon: "mdi-help-circle",
+        path: "/guides",
+      },
     ],
   }),
   methods: {

@@ -11,6 +11,7 @@ const history = require('connect-history-api-fallback');
 const ora = require('ora');
 let package = require('../package.json');
 const fs = require('fs');
+require('./discord.js')
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
 let backendonly = false;
 
@@ -94,6 +95,7 @@ async function runload() {
     app.use('/api/sessions/', require('./session')(usernames, pfps, settings, permissions, automation));
     app.use('/api/bans/', require('./bans')(usernames, pfps, settings, permissions, logging, automation));
     app.use('/api/ranking/', require('./ranking')(usernames, pfps, settings, permissions, automation));
+    app.use('/api/pdf/', require('./pdf')(usernames, pfps, settings, permissions, automation));
 }
 
 

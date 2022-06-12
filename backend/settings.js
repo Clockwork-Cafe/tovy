@@ -243,6 +243,12 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         res.status(200).json({ message: 'Successfully fetched config!', config: c });
     })
 
+    router.get('/applications', perms('admin'), async (req, res) => {
+        const applications = await db.application.find({});
+        if (!applications) return res.status(400).json({ message: 'No applications!' });
+        res.status(200).json({ message: 'Successfully fetched applications!', applications: applications });
+    });
+
     router.get('/roles', perms('admin'), async (req, res) => {
         const config = await settings.get('roles');
 
@@ -290,8 +296,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         let uid = req.session.userid;
         const application = db.application.findOne({ name: req.body.name });
         if (!application) return res.status(400).json({ message: 'No application found!' });
-        application.enabled = true;
-        await application.save();
+        await db.application.updateMany({ name: req.body.name }, { $set: { enabled: true } });
         logging.newLog(`has enabled the application ${req.body.name}`, req.session.userid);
         res.status(200).json({ message: 'Successfully updated application!' });
     })
@@ -301,7 +306,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         const application = db.application.findOne({ name: req.body.name });
         if (!application) return res.status(400).json({ message: 'No application found!' });
         application.enabled = false;
-        await application.save();
+        await db.application.updateMany({ name: req.body.name }, { $set: { enabled: false } });
         logging.newLog(`has disabled the application ${req.body.name}`, req.session.userid);
         res.status(200).json({ message: 'Successfully updated application!' });
     })
