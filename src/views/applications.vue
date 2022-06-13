@@ -22,6 +22,7 @@
           <p class="text-body-1">{{ app.description }}</p>
   <v-row>
                            <v-autocomplete
+              v-on:mousedown="getSelected(app.name)"
               class="mx-10 mt-5 mb-n2"
               v-model="newRanks"
               :items="ranks"
@@ -29,12 +30,13 @@
               item-value="id"
               outlined
               chips
+              :select="app.ranks"
               small-chips
               label="Allowed Ranks"
               multiple
             ></v-autocomplete>
-            <v-btn>
-              <v-icon>mdi-save</v-icon>
+            <v-btn class="mt-8 mb-n2 ml-n9 mr-10" @click="setRankRequirement(app.name)">
+              <v-icon>mdi-disk</v-icon>
               Save
             </v-btn>
             </v-row>
@@ -239,6 +241,7 @@ export default {
         console.log(error);
       });
     this.$http.get('/pdf/ranks').then((response) => {
+      console.log(response.data);
       this.ranks = response.data.roles;
     }).catch((error) => {
       console.log(error);
@@ -254,6 +257,15 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    getSelected: function (name) {
+      this.$http.get('/settings/getallowedranks?name=' + name).then((response) => {
+        for (let i in response.data.ranks) {
+          this.newRanks.push(Number(response.data.ranks[i]));
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
     },
     enableApplication: function (name) {
       this.$http
@@ -286,6 +298,27 @@ export default {
           this.toast.color = "error";
           this.toast.visible = true;
         });
+    },
+    setRankRequirement: function (name) {
+      this.dialog.loading = true;
+      this.$http.post('/settings/setallowedranks', {
+        name: name,
+        ranks: this.newRanks
+      }).then(() => {
+        this.dialog.loading = false;
+        this.newRanks = [];
+        this.dialog.active = false;
+        this.getApplications();
+        this.toast.message = "Rank requirements updated";
+        this.toast.color = "success";
+        this.toast.visible = true;
+      }).catch((error) => {
+        console.log(error);
+        this.dialog.loading = false;
+        this.toast.message = "Error updating rank requirements";
+        this.toast.color = "error";
+        this.toast.visible = true;
+      });
     },
     addQuestion: function () {
       this.$http

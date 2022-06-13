@@ -342,14 +342,20 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         res.status(200).json({ message: 'Successfully updated application!' });
     })
 
-    router.post('/setminrank', perms('admin'), async (req, res) => {
+    router.post('/setallowedranks', perms('admin'), async (req, res) => {
         let uid = req.session.userid;
         const application = db.application.findOne({ name: req.body.name });
         if (!application) return res.status(400).json({ message: 'No application found!' });
-        application.minrank = req.body.minrank;
-        await db.application.updateMany({ name: req.body.name }, { $set: { minrank: application.minrank } });
+        application.ranks = req.body.ranks;
+        await db.application.updateMany({ name: req.body.name }, { $set: { ranks: application.ranks } });
         logging.newLog(`has set the minimum rank for the application ${req.body.name}`, req.session.userid);
         res.status(200).json({ message: 'Successfully updated application!' });
+    })
+
+    router.get('/getallowedranks', perms('admin'), async (req, res) => {
+        const application = await db.application.findOne({ name: req.query.name });
+        if (!application) return res.status(400).json({ message: 'No application found!' });
+        res.status(200).json({ message: 'Successfully fetched application!', ranks: application.ranks });
     })
 
     router.post('/newinvite', perms('admin'), async (req, res) => {
