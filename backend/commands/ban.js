@@ -45,7 +45,7 @@ module.exports = {
         await interaction.deferReply()
         try {
             const result = await bloxlink.search(interaction.user.id, process.env.guild);
-            const data = await fetch('http://localhost:8080/api/bans/ban', {
+            const data = await fetch('https://clockwork.brandoge.lol/api/bans/ban', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
