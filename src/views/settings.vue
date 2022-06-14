@@ -679,6 +679,22 @@ export default {
     },
     update: function () {
       this.loading = true;
+      this.$http.post("/settings/update", {
+        withCredentials: true,
+        data: {
+          wall: this.wall,
+          sessions: this.sessions,
+          ranking: this.ranking,
+          roleconfig: this.roleconfig,
+          other: this.other,
+          notice: this.notice,
+        },
+      }).then(() => {
+        this.loading = false;
+        this.toast.message = "Tovy updated";
+        this.toast.color = "success";
+        this.toast.visible = true;  
+      });
     },
     copykey: function () {
       navigator.clipboard.writeText(this.ranking.apikey);
