@@ -228,7 +228,8 @@ export default {
         answer: "",
         name: "",
       },
-      newRanks: [],
+      newRanksTrainee: [],
+      newRanks: []
     };
   },
   mounted: function () {
