@@ -6,7 +6,18 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
     const perms = permissions.perms;
     router.get('/all', async (req, res) => {
         let pdfs = await db.pdf.find({});
-        res.status(200).json({ pdfs: pdfs });
+        const userPerms = await db.user.findOne({ userid: req.session.userid });
+        let pdfsToSend = [];
+        for (let i = 0; i < pdfs.length; i++) {
+            const pdf = pdfs[i];
+            if (
+                pdf.permission.includes(userPerms.role) ||
+                permissions.checkPerm(req.session.userid, "admin")
+            ) {
+                pdfsToSend.push(pdf);
+            }
+        }
+        res.status(200).json({ pdfs: pdfsToSend });
     })
     router.post('/add', perms("admin"), async (req, res) => {
         const { name, enabled, permission, url, description } = req.body;

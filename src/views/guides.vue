@@ -8,7 +8,7 @@
         <p class="text-body-1 font-weight-bold mt-n5 gray">Welcome to guides</p>
       </v-container>
     </v-sheet>
-    <v-btn @click="dialog.active = true" class="mt-n5 mx-10">
+    <v-btn @click="dialog.active = true" class="mt-n5 mx-10" color="black">
       <v-icon>mdi-pencil-plus</v-icon>
       Create Guide
     </v-btn>
@@ -23,21 +23,18 @@
           <p class="text-body-1">{{ guide.description }}</p>
         </v-card-text>
         <v-card-actions>
-          <v-btn
-            color="primary"
-            @click="enableGuide(guide.name)"
-            v-bind:disabled="guide.enabled"
-          >
-            Enable</v-btn
-          >
-          <v-btn
-            color="error"
-            @click="disableGuide(guide.name)"
-            v-bind:disabled="!guide.enabled"
-          >
-
-            Disable</v-btn
-          >
+            <v-btn class="ml-2 mb-2" :color="$store.state.group.color" @click="open(guide.url)">
+              <v-icon>mdi-open-in-new</v-icon>
+              Open Guide
+            </v-btn>
+            <v-btn
+            :color="$store.state.group.color"
+            class="ml-2 mb-2"
+            @click="deleteg(guide.name)"
+            >
+              <v-icon>mdi-delete-outline</v-icon>
+              Delete Guide
+            </v-btn>
         </v-card-actions>
         </v-card>
         </v-container>
@@ -126,6 +123,21 @@
         </v-stepper-items>
       </v-stepper>
     </v-dialog>
+
+    <v-snackbar v-model="toast.visible">
+      {{ toast.message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          :color="toast.color"
+          text
+          v-bind="attrs"
+          @click="toast.visible = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -189,13 +201,16 @@ export default {
         this.toast.visible = true;
       });
     },
-    delete: function (name) {
-      this.$http.delete("/pdf/delete/", { name: name }).then(() => {
+    deleteg: function (name) {
+      this.$http.post("/pdf/delete/", { name: name }).then(() => {
         this.refresh();
         this.toast.message = "Guide deleted";
         this.toast.color = "success";
         this.toast.visible = true;
       });
+    },
+    open: function (url) {
+      window.open(url, "_blank");
     },
   },
 };
