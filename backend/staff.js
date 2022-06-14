@@ -10,7 +10,7 @@ let activews = [];
 
 const erouter = (usernames, pfps, settings, permissions, automation) => {
   let perms = permissions.perms;
-  router.get('/getRole/:userid', async (req, res) => {
+  router.get('/getrole/:userid', async (req, res) => {
     const id = await noblox.getUsernameFromId(req.params.userid);
     const rank = await noblox.getRank(Number(settings.get('group')), id);
     const role = await noblox.getRole(Number(settings.get('group')), rank);
