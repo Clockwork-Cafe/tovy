@@ -483,8 +483,8 @@
             <v-expansion-panel-header> Update </v-expansion-panel-header>
           </v-layout>
           <v-expansion-panel-content>
-            <p>Update tovy</p>
-            <v-btn @click="update" color="info mt-2"> Update </v-btn>
+            <p>Update this instance!</p>
+            <v-btn @click="update" color="info"> Update </v-btn>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
