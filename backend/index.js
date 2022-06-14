@@ -128,6 +128,13 @@ app.post('/api/webhooks/:id/:secret', async (req, res) => {
     })
 })
 
+app.get('/api/getrole', async (req, res) => {
+    const id = await noblox.getIdFromUsername(req.query.name);
+    const rank = await noblox.getRank(Number(settings.get('group')), id);
+    const role = await noblox.getRole(Number(settings.get('group')), rank);
+    res.status(200).json({ role: role });
+  })
+
 app.get('/info', (req, res) => {
     let tovyr = settings.get('tovyr');
     if (!tovyr?.enabled) return res.status(500).send({ success: false, message: 'tovyr not enabled' });
