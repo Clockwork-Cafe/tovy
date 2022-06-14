@@ -40,6 +40,7 @@
             :color="$store.state.group.color"
             class="ml-2 mb-2"
             @click="deleteg(guide.name)"
+            v-if="$store.state.user.perms.includes('admin')"
           >
             <v-icon>mdi-delete-outline</v-icon>
             Delete Guide
