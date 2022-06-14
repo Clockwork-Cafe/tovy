@@ -8,7 +8,12 @@
         <p class="text-body-1 font-weight-bold mt-n5 gray">Welcome to guides</p>
       </v-container>
     </v-sheet>
-    <v-btn @click="dialog.active = true" class="mt-n5 mx-10" color="black">
+    <v-btn
+      @click="dialog.active = true"
+      class="mt-n5 mx-10"
+      color="black"
+      v-if="$store.state.user.perms.includes('admin')"
+    >
       <v-icon>mdi-pencil-plus</v-icon>
       Create Guide
     </v-btn>
@@ -23,21 +28,25 @@
           <p class="text-body-1">{{ guide.description }}</p>
         </v-card-text>
         <v-card-actions>
-            <v-btn class="ml-2 mb-2" :color="$store.state.group.color" @click="open(guide.url)">
-              <v-icon>mdi-open-in-new</v-icon>
-              Open Guide
-            </v-btn>
-            <v-btn
+          <v-btn
+            class="ml-2 mb-2"
+            :color="$store.state.group.color"
+            @click="open(guide.url)"
+          >
+            <v-icon>mdi-open-in-new</v-icon>
+            Open Guide
+          </v-btn>
+          <v-btn
             :color="$store.state.group.color"
             class="ml-2 mb-2"
             @click="deleteg(guide.name)"
-            >
-              <v-icon>mdi-delete-outline</v-icon>
-              Delete Guide
-            </v-btn>
+          >
+            <v-icon>mdi-delete-outline</v-icon>
+            Delete Guide
+          </v-btn>
         </v-card-actions>
-        </v-card>
-        </v-container>
+      </v-card>
+    </v-container>
     <v-dialog v-model="dialog.active" max-width="600px">
       <v-progress-linear
         :color="$store.state.group.color"
@@ -47,7 +56,9 @@
       ></v-progress-linear>
       <v-stepper v-model="dialog.page">
         <v-stepper-header>
-          <v-stepper-step :complete="dialog.page > 1" step="1"> URL </v-stepper-step>
+          <v-stepper-step :complete="dialog.page > 1" step="1">
+            URL
+          </v-stepper-step>
 
           <v-divider></v-divider>
 
@@ -66,11 +77,10 @@
               v-model="newGuide.url"
               label="URL"
               :rules="[
-                v => !!v || 'URL is required',
-                v => v.includes('http') || 'URL must be valid',
-              required
+                (v) => !!v || 'URL is required',
+                (v) => v.includes('http') || 'URL must be valid',
+                required,
               ]"
-              
             ></v-text-field>
             <v-btn color="primary" @click="dialog.page++"> Continue </v-btn>
 
@@ -177,7 +187,7 @@ export default {
   mounted: function () {
     this.$http.get("/pdf/all").then((response) => {
       this.guides = response.data.pdfs;
-      console.log(response.data)
+      console.log(response.data);
     });
     this.$http.get("/settings/roles").then((response) => {
       this.dialog.roles = response.data.roles;
