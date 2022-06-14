@@ -475,6 +475,18 @@
             <v-btn @click="setpolicy" color="info mt-2"> Save </v-btn>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-layout>
+            <v-icon size="22" :color="this.$store.state.group.color" class="ml-3 mr-n5">
+              mdi-cloud-upload
+            </v-icon>
+            <v-expansion-panel-header> Update </v-expansion-panel-header>
+          </v-layout>
+          <v-expansion-panel-content>
+            <p>Update tovy</p>
+            <v-btn @click="update" color="info mt-2"> Update </v-btn>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
     </v-container>
     <v-snackbar v-model="toast.visible">
@@ -664,6 +676,9 @@ export default {
   methods: {
     goto: function (url) {
       this.$router.push(url);
+    },
+    update: function () {
+      this.loading = true;
     },
     copykey: function () {
       navigator.clipboard.writeText(this.ranking.apikey);

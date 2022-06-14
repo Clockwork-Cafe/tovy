@@ -6,6 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const _ = require('lodash');
 const express = require('express');
+const { exec } = require('child_process');
 let package = require('../package.json');
 const axios = require('axios')
 const router = express.Router();
@@ -217,6 +218,19 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         res.status(200).json({ message: 'Updated!' });
     });
 
+    router.post('/update', perms('admin'), async (req, res) => {
+        const command_1 = 'git pull'
+        const command_2 = 'npm install -D  --force'
+        const command_3 = 'npm run build'
+        let one = await exec(command_1)
+        const two = await exec(command_2)
+        const three = await exec(command_3)
+        logging.newLog(`has updated the website`, req.session.userid);
+        res.status(200).json({ message: 'Updated!' });  
+        exec('pm2 restart tovy')
+        res.redirect(req.originalUrl)
+    })
+
     router.post('/settr', perms('admin'), async (req, res) => {
         if (req.body?.enabled == null) return res.status(400).json({ success: false, message: 'No enabled previded' });
         if (typeof req.body.enabled !== 'boolean') return res.status(400).json({ success: false, message: 'Enabled must be a string' });
@@ -383,6 +397,8 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
 
         res.status(200).json({ message: 'Successfully updated invites!', invite: zz });
     });
+
+
 
     router.get('/groles', async (req, res) => {
         let cp = await checkPerm(req.session.userid, 'manage_staff_activity');
