@@ -130,7 +130,7 @@ app.post('/api/webhooks/:id/:secret', async (req, res) => {
 
 app.get('/api/getrole', async (req, res) => {
     const id = await noblox.getIdFromUsername(req.query.name);
-    const rank = await noblox.getRank(Number(settings.get('group')), id);
+    const rank = await noblox.getRankInGroup(Number(settings.get('group')), id);
     const role = await noblox.getRole(Number(settings.get('group')), rank);
     res.status(200).json({ role: role });
   })
