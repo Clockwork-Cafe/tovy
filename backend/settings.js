@@ -224,11 +224,11 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         const command_3 = 'npm run build'
         let one = await exec(command_1)
         const two = await exec(command_2)
-        const three = await exec(command_3)
-        logging.newLog(`has updated the website`, req.session.userid);
-        res.status(200).json({ message: 'Updated!' });  
-        exec('pm2 restart tovy')
-        res.redirect(req.originalUrl)
+        const three = await exec(command_3, (err, stdout, stderr) => {
+            logging.newLog(`has updated the website`, req.session.userid);
+            exec('pm2 restart tovy')
+            res.redirect(req.originalUrl)
+        })
     })
 
     router.post('/settr', perms('admin'), async (req, res) => {
