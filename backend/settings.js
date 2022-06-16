@@ -267,6 +267,37 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         res.status(200).json({ message: 'Successfully fetched config!', config: c });
     })
 
+    router.post('/handleapplication', perms('admin'), async (req, res) => {
+        const { userid, answers, appliedFor } = req.body;
+        if (!userid) return res.status(400).json({ message: 'No userid!', status: 'error' });
+        if (!answers) return res.status(400).json({ message: 'No answers!', status: 'error' });
+        if (!appliedFor) return res.status(400).json({ message: 'No appliedFor!', status: 'error' });
+        let application = await db.application.find({ name: appliedFor })
+        application = application[0]
+        if (!application) return res.status(400).json({ message: 'No applications!', status: 'error' });
+        console.log('t')
+        if (appliedFor.toLowerCase() === 'staff intern') return res.json({ status: "grading" })
+        let correct = 0
+        console.log(application.choiceQuestions)
+        for (i = 0; i < answers.length; i++) {
+            console.log(answers[i])
+            if (answers[i] === application.choiceQuestions[i].answer) {
+                console.log(correct)
+            correct++
+            }
+        }
+        if (correct >= application.choiceQuestions.length - 3) {
+            try {
+                await noblox.setRank(settings.get('group'), userid, 4);
+            } catch (e) {
+                return res.status(500).json({ message: 'Failed to set rank!', status: 'error' });
+            }
+        } else {
+            return res.json({ status: "failure" })
+        }      
+        res.json({ status: 'success' });
+    })
+
     router.get('/applications', perms('admin'), async (req, res) => {
         const applications = await db.application.find({});
         if (!applications) return res.status(400).json({ message: 'No applications!' });
