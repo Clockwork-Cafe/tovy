@@ -215,7 +215,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         if (req.body?.enabled == null) return res.status(400).json({ success: false, message: 'No enabled previded' });
         if (typeof req.body.enabled !== 'boolean') return res.status(400).json({ success: false, message: 'Enabled must be a string' });
         settings.set('wproxy', req.body.enabled);
-        logging.newLog(`has **${req.body.enabled ? 'enabled' : 'disabled'}** the wall`, req.session.userid);
+        logging.newLog(`has **${req.body.enabled ? 'enabled' : 'disabled'}** the webhook proxy`, req.session.userid);
 
         res.status(200).json({ message: 'Updated!' });
     });

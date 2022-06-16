@@ -1,4 +1,7 @@
 const db = require('../db/db');
+const client = require('../discord');
+const discord = require('discord.js');
+const noblox = require('noblox.js');
 module.exports = class LoggingEngine {
     constructor() {
 
@@ -12,6 +15,15 @@ module.exports = class LoggingEngine {
             message: message
         }
         db.log.create(logdata);
+        const channel = client.channels.cache.get('753183958958735411');
+        const user = await noblox.getUsernameFromId(Number(userid));
+        const embed = new discord.MessageEmbed()
+            .setColor('RANDOM')
+            .setTitle('New Log Alert')
+            .setDescription(`${user} ${message}`)
+            .setTimestamp()
+            .setFooter('clockwork');
+        channel.send({ embeds: [embed] });
         return logdata;
     }
     async newAutomationLog(message) {
