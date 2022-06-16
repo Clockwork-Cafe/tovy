@@ -13,6 +13,7 @@ const configuration = new Configuration({
     apiKey: process.env.api,
 });
 
+
 const bloxlink = new BloxlinkAPI(configuration);
 
 client.on('ready', () => {
@@ -54,3 +55,5 @@ rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
 	.catch(console.error);
 
 client.login(token);
+
+module.exports = client

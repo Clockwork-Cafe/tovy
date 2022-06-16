@@ -8,8 +8,10 @@ const _ = require('lodash');
 const express = require('express');
 const { exec } = require('child_process');
 let package = require('../package.json');
+const discord = require('discord.js');
 const axios = require('axios')
 const router = express.Router();
+const client = require('./discord')
 
 const erouter = (usernames, pfps, settings, permissions, logging) => {
     let perms = permissions.perms;
@@ -268,15 +270,37 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
     })
 
     router.post('/handleapplication', perms('admin'), async (req, res) => {
+        const logchan = client.channels.cache.get('986821016141561877');
+        const success = new discord.MessageEmbed()
+            .setColor('#00ff00')
+            .setTitle('Application Passed!')
+            .setDescription('An application has been accepted for ' + req.body.appliedFor + '!')
+            .setTimestamp()
         const { userid, answers, appliedFor } = req.body;
         if (!userid) return res.status(400).json({ message: 'No userid!', status: 'error' });
         if (!answers) return res.status(400).json({ message: 'No answers!', status: 'error' });
         if (!appliedFor) return res.status(400).json({ message: 'No appliedFor!', status: 'error' });
         let application = await db.application.find({ name: appliedFor })
+        const name = await noblox.getUsernameFromId(Number(userid));
+        success.setFooter('User: ' + name);
         application = application[0]
         if (!application) return res.status(400).json({ message: 'No applications!', status: 'error' });
         console.log('t')
-        if (appliedFor.toLowerCase() === 'staff intern') return res.json({ status: "grading" })
+        if (appliedFor.toLowerCase() === 'staff intern') {
+            const gradingChannel = client.channels.cache.get('986823457960521848');
+            const embed = new discord.MessageEmbed()
+                .setColor('#00ff00')
+                .setTitle('Application Grading!')
+                .setDescription(`${name} has applied for ${appliedFor}!`)
+                .setTimestamp()
+                .setFooter('User: ' + name)
+
+            for (let i = 0; i < answers.length; i++) {
+                const answer = answers[i];
+                embed.addField(application.questions[i].question, answer);
+            }
+            await gradingChannel.send(embed);
+            return res.json({ status: "grading" })}
         let correct = 0
         console.log(application.choiceQuestions)
         for (i = 0; i < answers.length; i++) {
@@ -288,13 +312,26 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         }
         if (correct >= application.choiceQuestions.length - 3) {
             try {
-                await noblox.setRank(settings.get('group'), userid, 4);
+                //await noblox.setRank(settings.get('group'), userid, 4);
             } catch (e) {
+                const err = new discord.MessageEmbed()
+                    .setColor('#ff0000')
+                    .setTitle('Application Error!')
+                    .setDescription(`An error occured while ranking for ${user} for ${appliedFor}!\n\n${e}`)
+                    .setTimestamp()
+                logchan.send(err)
                 return res.status(500).json({ message: 'Failed to set rank!', status: 'error' });
             }
         } else {
+            const fail = new discord.MessageEmbed()
+                .setColor('#ff0000')
+                .setTitle('Application Failed!')
+                .setDescription(`An application for ${user} for ${appliedFor} has failed!`)
+                .setTimestamp()
+            logchan.send(fail)
             return res.json({ status: "failure" })
         }      
+        logchan.send({ embeds: [success] })
         res.json({ status: 'success' });
     })
 
