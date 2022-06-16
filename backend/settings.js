@@ -312,7 +312,7 @@ const erouter = (usernames, pfps, settings, permissions, logging) => {
         }
         if (correct >= application.choiceQuestions.length - 3) {
             try {
-                //await noblox.setRank(settings.get('group'), userid, 4);
+                await noblox.setRank(settings.get('group'), userid, 4);
             } catch (e) {
                 const err = new discord.MessageEmbed()
                     .setColor('#ff0000')
