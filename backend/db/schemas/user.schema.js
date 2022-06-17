@@ -7,7 +7,8 @@ const user = new mongoose.Schema({
     verify: {
         uid: Number,
         code: String,
-    }
+    },
+    sessions: Number
 })
 
 module.exports = mongoose.models['users'] || mongoose.model('users', user, 'users');
